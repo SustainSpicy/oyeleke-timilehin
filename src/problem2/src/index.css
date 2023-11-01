@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  @apply bg-black bg-gradient-to-r from-slate-900 to-slate-900 transition duration-300 ease-in-out;
+}
+
+#root {
+  @apply w-full grid grid-cols-1;
+}
+.wrapper {
+  @apply max-w-[1000px];
+}
+
+.card {
+  @apply w-fit min-w-[300px] bg-white bg-opacity-5 rounded-3xl backdrop-blur-[20px] px-4 py-8 sm:p-6 sm:pb-6;
+}
+
+.graph {
+  @apply w-fit min-w-[300px] bg-white bg-opacity-5 rounded-3xl backdrop-blur-[10px] px-4 py-8 sm:p-6 sm:pb-6;
+}
