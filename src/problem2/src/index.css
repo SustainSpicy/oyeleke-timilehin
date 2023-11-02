@@ -19,9 +19,29 @@ body {
 }
 
 .card {
-  @apply w-fit min-w-[300px] bg-white bg-opacity-5 rounded-3xl backdrop-blur-[20px] px-4 py-8 sm:p-6 sm:pb-6;
+  @apply w-full sm:w-fit min-w-[300px] bg-white bg-opacity-5 rounded-3xl backdrop-blur-[20px] px-4 py-8 sm:p-6 sm:pb-6;
 }
 
 .graph {
   @apply w-fit min-w-[300px] bg-white bg-opacity-5 rounded-3xl backdrop-blur-[10px] px-4 py-8 sm:p-6 sm:pb-6;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Track (the area along which the thumb moves) */
+::-webkit-scrollbar-track {
+  background: #ffffff0d;
+}
+
+/* Handle (thumb) */
+::-webkit-scrollbar-thumb {
+  background: #0f172a;
+  border-radius: 6px; /* Round the thumb */
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

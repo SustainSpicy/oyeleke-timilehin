@@ -3,12 +3,12 @@ import { Dispatch, Fragment, ReactNode, SetStateAction, useState } from "react";
 
 interface MyModalProps {
   isOpen: boolean;
-  setIsOpen: Dispatch<SetStateAction<any>>;
+  setIsOpen: { modal: string; open: boolean };
   children: ReactNode;
 }
 export default function MyModal({ isOpen, setIsOpen, children }: MyModalProps) {
   function closeModal() {
-    setIsOpen({ modal: "", open: false });
+    setIsOpen = { modal: "", open: false };
   }
 
   return (
@@ -37,10 +37,10 @@ export default function MyModal({ isOpen, setIsOpen, children }: MyModalProps) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full flex flex-col gap-6 max-w-md max-h-md transform overflow-hidden rounded-2xl bg-blue p-6 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="w-full flex flex-col gap-6 max-w-md max-h-md transform overflow-hidden rounded-2xl bg-blue p-0 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-xl font-bold leading-6 text-white "
+                  className="text-xl font-bold leading-6 text-white p-4"
                 >
                   Select a token
                 </Dialog.Title>

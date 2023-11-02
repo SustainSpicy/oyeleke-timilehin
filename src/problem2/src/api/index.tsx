@@ -1,11 +1,11 @@
 import {} from "../constants/types";
 
-const API_URL = "https://api.coingecko.com/api/v3/simple";
+const API_URL = "https://api.coingecko.com/api/v3";
 
 // Function to fetch allTokens
 export async function fetchCurrenciesList() {
   try {
-    const response = await fetch(API_URL + "/supported_vs_currencies");
+    const response = await fetch(API_URL + "/coins/list");
     const data = await response.json();
 
     if (response.ok) {
@@ -24,16 +24,17 @@ export async function convertCurrency(
   toToken: string,
   amount: number
 ) {
-  const URL = `${API_URL}/price?ids=${fromToken}&vs_currencies=${toToken}`;
-
+  const URL = `${API_URL}/simple/price?ids=${fromToken},${toToken}&vs_currencies=usd`;
   try {
     const response = await fetch(URL);
     const data = await response.json();
 
     if (response.ok) {
-      const exchangeRate = data[fromToken][toToken];
+      const exchangeRate = data[fromToken]["usd"];
+
       if (exchangeRate) {
         const convertedAmount = amount * exchangeRate;
+
         return convertedAmount.toFixed(2); // Limit to 2 decimal places
       } else {
         throw new Error("Invalid currency codes provided");
@@ -47,12 +48,21 @@ export async function convertCurrency(
   }
 }
 
-export function mapImageToToken(tokensList: any) {
-  // Create a mapping object for toekn symbols to image filenames
-  const currencyImageMap: any = {};
-  tokensList.forEach((token: any) => {
-    const imageName = `/tokens/${token}.svg`; // Assuming token symbols are unique
-    currencyImageMap[token] = imageName;
-  });
-  return currencyImageMap;
+const API_URL2 = "https://interview.switcheo.com/prices.json";
+
+// Function to fetch allTokens
+export async function fetchCurrenciesList2() {
+  try {
+    const response = await fetch(API_URL2);
+    const data = await response.json();
+
+    if (response.ok) {
+      return await data;
+    } else {
+      throw new Error("Failed to fetch currencies list");
+    }
+  } catch (error: any) {
+    console.error("Error fetching currencies list:", error.message);
+    throw error;
+  }
 }
