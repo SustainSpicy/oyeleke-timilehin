@@ -19,7 +19,7 @@ const Navbar = () => {
           <span key={index}>{capitalizeWords(item.text)}</span>
         ))}
       </div>
-      <button className="w-[189px] h-full bg-zinc-300 bg-opacity-80 rounded-[30px] text-black font-bold">
+      <button className="hover:opacity-100 transition-opacity w-[189px] h-full bg-zinc-300 bg-opacity-80 rounded-[30px] text-black font-bold">
         Launch App
       </button>
     </div>

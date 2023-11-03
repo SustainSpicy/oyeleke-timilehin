@@ -1,15 +1,39 @@
-import {} from "../constants/types";
+import { Store, TokenData } from "../constants/types";
 
-const API_URL = "https://api.coingecko.com/api/v3";
+export async function convertCurrency(
+  fromToken: TokenData,
+  toToken: TokenData,
+  amount: number,
+  supportedCurrencies: TokenData[]
+) {
+  if (fromToken && toToken && amount) {
+    const token1Value = supportedCurrencies.find(
+      (token) => token.currency === fromToken.currency
+    )?.price;
+    const token2Value = supportedCurrencies.find(
+      (token) => token.currency === toToken.currency
+    )?.price;
+    if (token1Value && token2Value) {
+      const convertedPrice = (amount * token2Value) / token1Value;
+
+      return parseFloat(convertedPrice.toFixed(5));
+    }
+  }
+}
+
+const API_URL = "https://interview.switcheo.com/prices.json";
 
 // Function to fetch allTokens
 export async function fetchCurrenciesList() {
   try {
-    const response = await fetch(API_URL + "/coins/list");
+    const response = await fetch(API_URL);
     const data = await response.json();
-
+    const currenciesData: TokenData[] = data.map((token: TokenData) => ({
+      currency: token.currency,
+      price: token.price,
+    }));
     if (response.ok) {
-      return await data;
+      return currenciesData;
     } else {
       throw new Error("Failed to fetch currencies list");
     }
@@ -19,50 +43,28 @@ export async function fetchCurrenciesList() {
   }
 }
 
-export async function convertCurrency(
-  fromToken: string,
-  toToken: string,
-  amount: number
+export async function tokenConversion(
+  amount: string,
+  fromToken: TokenData,
+  toToken: TokenData,
+  supportedCurrencies: TokenData[],
+  store: Store,
+  type: string
 ) {
-  const URL = `${API_URL}/simple/price?ids=${fromToken},${toToken}&vs_currencies=usd`;
-  try {
-    const response = await fetch(URL);
-    const data = await response.json();
-
-    if (response.ok) {
-      const exchangeRate = data[fromToken]["usd"];
-
-      if (exchangeRate) {
-        const convertedAmount = amount * exchangeRate;
-
-        return convertedAmount.toFixed(2); // Limit to 2 decimal places
-      } else {
-        throw new Error("Invalid currency codes provided");
-      }
-    } else {
-      throw new Error(`Failed to fetch exchange rates: ${data.error.info}`);
-    }
-  } catch (error: any) {
-    console.error("Error fetching exchange rates:", error.message);
-    throw error;
-  }
-}
-
-const API_URL2 = "https://interview.switcheo.com/prices.json";
-
-// Function to fetch allTokens
-export async function fetchCurrenciesList2() {
-  try {
-    const response = await fetch(API_URL2);
-    const data = await response.json();
-
-    if (response.ok) {
-      return await data;
-    } else {
-      throw new Error("Failed to fetch currencies list");
-    }
-  } catch (error: any) {
-    console.error("Error fetching currencies list:", error.message);
-    throw error;
-  }
+  const result = await convertCurrency(
+    fromToken,
+    toToken,
+    parseFloat(amount),
+    supportedCurrencies
+  );
+  // if (result) {
+  //   if (type === "fromToken") {
+  //     store.toAmount = result.toString();
+  //   }
+  //   if (type === "toToken") {
+  //     store.fromAmount = result.toString();
+  //   }
+  //   store.conversionResult = result;
+  // }
+  return result;
 }

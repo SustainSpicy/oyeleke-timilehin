@@ -3,7 +3,23 @@ export type CurrencyImages = {
 };
 
 export type TokenData = {
-  id: string;
-  symbol: string;
-  name: string;
+  currency: string;
+  price: number;
 };
+
+export type Store = {
+  isHovering: boolean;
+  fromToken: TokenData | null;
+  toToken: TokenData | null;
+  fromAmount: string;
+  toAmount: string;
+  supportedCurrencies: TokenData[];
+  isOpen: { modal: string; open: boolean };
+  searchQuery: string;
+  conversionResult: string;
+};
+
+export interface PriceData {
+  time: string;
+  price: number;
+}

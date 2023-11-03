@@ -14,32 +14,73 @@ import ConvertionInput from "../form";
 import { TokenData } from "../../constants/types";
 import { converterStore } from "../../constants/store";
 import { useSnapshot } from "valtio";
-import { convertCurrency } from "../../api";
+import { convertCurrency, tokenConversion } from "../../api";
 
 interface TokenFormProps {
   type: string;
   img: string;
   symbol: TokenData | null;
-  // onAmountChange: (amount: string) => void;
 }
 
 const TokenForm = ({ type, img, symbol }: TokenFormProps) => {
   const snapshot = useSnapshot(converterStore);
-  const { fromToken, toToken, fromAmount, toAmount } = snapshot;
+  const {
+    fromToken,
+    toToken,
+    conversionResult,
+    fromAmount,
+    toAmount,
+    supportedCurrencies,
+  } = snapshot;
+
+  useEffect(() => {
+    async function quickPriceConvertion() {
+      if (fromToken && toToken) {
+        const mutableSupportedCurrencies: TokenData[] = [
+          ...supportedCurrencies,
+        ];
+        const result = await tokenConversion(
+          conversionResult,
+          fromToken,
+          toToken,
+          mutableSupportedCurrencies,
+          converterStore,
+          type
+        );
+        if (result) {
+          converterStore.conversionResult = result.toString();
+        }
+      }
+    }
+    quickPriceConvertion();
+  }, [fromToken]);
 
   async function handleTokenConversion(amount: string) {
+    if (type === "fromToken") {
+      converterStore.fromAmount = amount;
+    }
+    if (type === "toToken") {
+      converterStore.toAmount = amount;
+    }
     if (amount && fromToken && toToken) {
-      const conversionRate = await convertCurrency(
-        type === "fromToken" ? fromToken.id : toToken.id,
-        type === "fromToken" ? toToken.id : fromToken.id,
-        parseFloat(amount)
+      const mutableSupportedCurrencies: TokenData[] = [...supportedCurrencies];
+      const result = await tokenConversion(
+        amount,
+        fromToken,
+        toToken,
+        mutableSupportedCurrencies,
+        converterStore,
+        type
       );
-      if (conversionRate !== "NaN")
+      if (result) {
         if (type === "fromToken") {
-          converterStore.toAmount = conversionRate;
-        } else {
-          converterStore.fromAmount = conversionRate;
+          converterStore.toAmount = result.toString();
         }
+        if (type === "toToken") {
+          converterStore.fromAmount = result.toString();
+        }
+        converterStore.conversionResult = result.toString();
+      }
     }
   }
   return (
@@ -47,28 +88,27 @@ const TokenForm = ({ type, img, symbol }: TokenFormProps) => {
       <div className="formWrapper flex flex-col gap-2">
         <div
           onClick={() => (converterStore.isOpen = { modal: type, open: true })}
-          className="flex gap-2 cursor-pointer hover:opacity-70 transition duration-300 ease-in-out"
+          className="active:translate-y-2 flex gap-2 cursor-pointer hover:opacity-70 transition duration-300 ease-in-out"
         >
           <div className="w-6 h-6 bg-gray rounded-full ">
             <img
-              src={img && img}
+              src={img}
               alt="token_logo"
               className="w-full h-full object-cover"
             />
           </div>
           <div className="flex items-center ">
             <span className="text-white text-sm font-bold">
-              {symbol?.symbol.toUpperCase()}
+              {symbol?.currency}
             </span>
             <BiCaretDown color="white" />
           </div>
         </div>
-        <div className=" rounded-3xl  border-blue-2 bg-blue hover:border-white">
-          <ConvertionInput
-            onAmountChange={handleTokenConversion}
-            amount={type === "fromToken" ? fromAmount : toAmount}
-          />
-        </div>
+
+        <ConvertionInput
+          onAmountChange={handleTokenConversion}
+          amount={type === "fromToken" ? fromAmount : toAmount}
+        />
       </div>
     </>
   );

@@ -1,18 +1,21 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Dispatch, Fragment, ReactNode, SetStateAction, useState } from "react";
-
+import { Fragment, ReactNode } from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
+import { useSnapshot } from "valtio";
+import { converterStore } from "../constants/store";
 interface MyModalProps {
-  isOpen: boolean;
-  setIsOpen: { modal: string; open: boolean };
   children: ReactNode;
 }
-export default function MyModal({ isOpen, setIsOpen, children }: MyModalProps) {
+export default function MyModal({ children }: MyModalProps) {
+  const snapshot = useSnapshot(converterStore);
+  const { isOpen } = snapshot;
+
   function closeModal() {
-    setIsOpen = { modal: "", open: false };
+    converterStore.isOpen = { modal: "", open: false };
   }
 
   return (
-    <Transition appear show={isOpen} as={Fragment}>
+    <Transition appear show={isOpen.open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeModal}>
         <Transition.Child
           as={Fragment}
@@ -37,12 +40,16 @@ export default function MyModal({ isOpen, setIsOpen, children }: MyModalProps) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="w-full flex flex-col gap-6 max-w-md max-h-md transform overflow-hidden rounded-2xl bg-blue p-0 text-left align-middle shadow-xl transition-all">
+              <Dialog.Panel className="z-50 w-full flex flex-col gap-6 max-w-md max-h-md transform overflow-hidden rounded-2xl bg-blue p-0 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-xl font-bold leading-6 text-white p-4"
+                  className="flex justify-between text-xl font-bold leading-6 text-white p-4"
                 >
-                  Select a token
+                  <span>Select a token</span>
+                  <AiFillCloseCircle
+                    className="cursor-pointer focus:animate-bounce"
+                    onClick={() => closeModal()}
+                  />
                 </Dialog.Title>
                 {children}
               </Dialog.Panel>
