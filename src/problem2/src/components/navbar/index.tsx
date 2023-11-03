@@ -1,12 +1,6 @@
-import { capitalizeWords } from "../../constants/utils";
-
-const navItems = [
-  { url: "/", text: "home" },
-  { url: "/", text: "features" },
-];
 const Navbar = () => {
   return (
-    <div className="navbar wrapper h-[60px] p-custom w-full justify-self-center mt-4 flex items-center justify-between bg-white bg-opacity-5 rounded-[50px] backdrop-blur-[20px]">
+    <div className="navbar wrapper cursor-pointer h-[60px] p-custom w-full justify-self-center mt-4 flex items-center justify-between bg-white bg-opacity-5 rounded-[50px] backdrop-blur-[20px]">
       <div className="w-12 h-12 rounded-full  p-2">
         <img
           src="/logo.png"

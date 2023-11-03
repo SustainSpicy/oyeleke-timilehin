@@ -1,20 +1,31 @@
 import { useEffect, useState } from "react";
 import TokenForm from "./TokenForm";
-import { AiOutlineArrowDown, AiOutlineSwap } from "react-icons/ai";
+import {
+  AiFillCloseCircle,
+  AiOutlineArrowDown,
+  AiOutlineSwap,
+} from "react-icons/ai";
 import { BsArrowRightShort } from "react-icons/bs";
 import { MdOutlineSwapVert } from "react-icons/md";
 import { fetchCurrenciesList } from "../../api";
-import MyModal from "../modal";
+import MyModal from "./modal";
 import { mapImageToToken, truncateString } from "../../constants/utils";
 import { converterStore } from "../../constants/store";
 import { useSnapshot } from "valtio";
 import { AnimatePresence, motion } from "framer-motion";
+import { useAlertContext } from "../../provider/alert";
+import CustomModal from "../customModal";
+import Honeycomb_loader from "../loaders/honeycomb_loader";
+import { Dialog } from "@headlessui/react";
+import { BsCurrencyExchange } from "react-icons/bs";
 
 const Converter = () => {
+  const [openAlertBar] = useAlertContext();
   const snapshot = useSnapshot(converterStore);
   const [isHovering, setIsHovering] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [customModalIsOpen, setCustomModalIsOpen] = useState<boolean>(false);
   // Accessing the states from the store
   const {
     fromToken,
@@ -38,8 +49,15 @@ const Converter = () => {
           converterStore.toToken = { ...tokensList[4] }; // Set default toToken
           converterStore.currencyImages = mapImageToToken(tokensList); //map token images to symbol
         }
+        openAlertBar({
+          type: "success",
+          msg: "Tokens loaded!",
+        });
       } catch (error: any) {
-        console.error("Error fetching currencies:", error.message);
+        openAlertBar({
+          type: "error",
+          msg: error.message || "An error occurred",
+        });
       }
     }
     fetchCurrencies();
@@ -61,11 +79,19 @@ const Converter = () => {
       : token.currency.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
+  function swapTokens() {
+    setIsLoading(true);
+    setCustomModalIsOpen(true);
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }
   return (
     <motion.div
       animate={{ x: 0, opacity: 1 }}
       initial={{ x: 800, opacity: 0 }}
-      transition={{ duration: 1.1 }}
+      transition={{ duration: 0.8, delay: 0.2 }}
       className="card flex flex-col gap-6 "
     >
       <div className="card-header">
@@ -113,7 +139,10 @@ const Converter = () => {
           <span>0.5%</span>
         </div>
       </div>
-      <button className="active:translate-y-3 rounded-3xl bg-green-700 p-4 text-white hover:bg-green-900">
+      <button
+        onClick={() => swapTokens()}
+        className="active:translate-y-3 rounded-3xl bg-green-700 p-4 text-white hover:bg-green-900"
+      >
         Swap
       </button>
       <MyModal>
@@ -178,6 +207,29 @@ const Converter = () => {
           </AnimatePresence>
         </motion.div>
       </MyModal>
+      <CustomModal isOpen={customModalIsOpen} setIsOpen={setCustomModalIsOpen}>
+        {isLoading ? (
+          <Honeycomb_loader />
+        ) : (
+          <Dialog.Panel className="z-50 w-full flex flex-col gap-6 max-w-md max-h-md transform overflow-hidden rounded-2xl bg-blue p-0 text-left align-middle shadow-xl transition-all">
+            <Dialog.Title
+              as="h3"
+              className="flex justify-between text-xl font-bold leading-6 text-white p-4"
+            >
+              <span></span>
+              <AiFillCloseCircle
+                className="cursor-pointer focus:animate-bounce"
+                onClick={() => setCustomModalIsOpen(false)}
+              />
+            </Dialog.Title>
+            <div className="main p-6 flex flex-col items-center gap-4">
+              <h1 className="font-bold font-xl text-white">Swap Completed</h1>
+
+              <BsCurrencyExchange fontSize={"50px"} color="white" />
+            </div>
+          </Dialog.Panel>
+        )}
+      </CustomModal>
     </motion.div>
   );
 };

@@ -5,6 +5,7 @@ import { TokenData } from "../../constants/types";
 import { converterStore } from "../../constants/store";
 import { useSnapshot } from "valtio";
 import { tokenConversion } from "../../api";
+import { useAlertContext } from "../../provider/alert";
 
 interface TokenFormProps {
   type: string;
@@ -13,6 +14,7 @@ interface TokenFormProps {
 }
 
 const TokenForm = ({ type, img, symbol }: TokenFormProps) => {
+  const [openAlertBar] = useAlertContext();
   const snapshot = useSnapshot(converterStore);
   const {
     fromToken,
@@ -25,21 +27,28 @@ const TokenForm = ({ type, img, symbol }: TokenFormProps) => {
 
   useEffect(() => {
     async function quickPriceConvertion() {
-      if (fromToken && toToken) {
-        const mutableSupportedCurrencies: TokenData[] = [
-          ...supportedCurrencies,
-        ];
-        const result = await tokenConversion(
-          conversionResult,
-          fromToken,
-          toToken,
-          mutableSupportedCurrencies,
-          converterStore,
-          type
-        );
-        if (result) {
-          converterStore.conversionResult = result.toString();
+      try {
+        if (fromToken && toToken) {
+          const mutableSupportedCurrencies: TokenData[] = [
+            ...supportedCurrencies,
+          ];
+          const result = await tokenConversion(
+            conversionResult,
+            fromToken,
+            toToken,
+            mutableSupportedCurrencies,
+            converterStore,
+            type
+          );
+          if (result) {
+            converterStore.conversionResult = result.toString();
+          }
         }
+      } catch (error: any) {
+        openAlertBar({
+          type: "error",
+          msg: error.message || "An error occurred",
+        });
       }
     }
     quickPriceConvertion();

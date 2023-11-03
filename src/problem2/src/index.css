@@ -15,7 +15,7 @@ body {
   @apply w-full grid grid-cols-1;
 }
 .wrapper {
-  @apply max-w-[1000px];
+  @apply max-w-[1020px] overflow-hidden;
 }
 
 .card {

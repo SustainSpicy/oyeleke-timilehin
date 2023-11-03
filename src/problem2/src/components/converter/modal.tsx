@@ -2,7 +2,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, ReactNode } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { useSnapshot } from "valtio";
-import { converterStore } from "../constants/store";
+import { converterStore } from "../../constants/store";
+
 interface MyModalProps {
   children: ReactNode;
 }
