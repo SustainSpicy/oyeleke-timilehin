@@ -29,10 +29,10 @@ const ConvertionInput = ({ amount, onAmountChange }: ConversionInputProps) => {
 
   return (
     <div
-      className={`flex flex-col rounded-3xl  border-blue-2 bg-blue min-h-[80px]  ${
+      className={`flex flex-col border-transparent rounded-3xl  border-blue-2 bg-blue min-h-[80px]  ${
         isInvalidInput
           ? " border border-red-500  hover:border-red-500 animate-shake"
-          : "hover:border-[#0284c7] border "
+          : "hover:border-[#0284c7] border"
       }`}
     >
       <input
