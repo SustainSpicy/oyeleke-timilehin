@@ -17,6 +17,7 @@ export type Store = {
   isOpen: { modal: string; open: boolean };
   searchQuery: string;
   conversionResult: string;
+  currencyImages: CurrencyImages;
 };
 
 export interface PriceData {

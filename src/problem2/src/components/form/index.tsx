@@ -1,7 +1,6 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { isValidMoney } from "../../constants/utils";
 import { AiFillCloseCircle } from "react-icons/ai";
-
 interface ConversionInputProps {
   amount: string;
   onAmountChange: (amount: string) => void;
@@ -32,7 +31,7 @@ const ConvertionInput = ({ amount, onAmountChange }: ConversionInputProps) => {
     <div
       className={`flex flex-col rounded-3xl  border-blue-2 bg-blue min-h-[80px]  ${
         isInvalidInput
-          ? " border border-red-500  hover:border-red-500 active:animate-bounce"
+          ? " border border-red-500  hover:border-red-500 animate-shake"
           : "hover:border-[#0284c7] border "
       }`}
     >
@@ -43,9 +42,15 @@ const ConvertionInput = ({ amount, onAmountChange }: ConversionInputProps) => {
         value={inputValue}
         onChange={handleInputChange}
       />
-      {isInvalidInput && (
-        <span className="text-right pr-6 text-sm text-gray">Invalid Input</span>
-      )}
+      <div className="flex justify-end items-center">
+        {isInvalidInput && (
+          <span className="text-right pr-4 text-sm text-gray">
+            <AiFillCloseCircle color="#8d1837" fontSize={"20px"} />
+          </span>
+        )}
+
+        <span className="text-right pr-6 text-sm text-gray"> 0.00 :USD</span>
+      </div>
     </div>
   );
 };

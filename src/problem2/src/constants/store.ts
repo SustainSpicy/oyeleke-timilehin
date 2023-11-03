@@ -1,5 +1,5 @@
 import { proxy } from "valtio";
-import { Store, TokenData } from "./types";
+import { Store } from "./types";
 
 export const converterStore: Store = proxy({
   isHovering: false,

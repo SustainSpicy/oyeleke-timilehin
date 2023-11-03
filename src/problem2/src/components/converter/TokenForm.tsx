@@ -1,20 +1,10 @@
-import {
-  ChangeEvent,
-  Dispatch,
-  MouseEventHandler,
-  SetStateAction,
-  useEffect,
-  useState,
-} from "react";
+import { useEffect } from "react";
 import { BiCaretDown } from "react-icons/bi";
-import { Dialog } from "@headlessui/react";
-import MyModal from "../modal";
-import ConvertionForm from "../form";
 import ConvertionInput from "../form";
 import { TokenData } from "../../constants/types";
 import { converterStore } from "../../constants/store";
 import { useSnapshot } from "valtio";
-import { convertCurrency, tokenConversion } from "../../api";
+import { tokenConversion } from "../../api";
 
 interface TokenFormProps {
   type: string;
@@ -53,7 +43,8 @@ const TokenForm = ({ type, img, symbol }: TokenFormProps) => {
       }
     }
     quickPriceConvertion();
-  }, [fromToken]);
+    // eslint-disable-next-line
+  }, [fromToken, toToken]);
 
   async function handleTokenConversion(amount: string) {
     if (type === "fromToken") {
@@ -88,7 +79,7 @@ const TokenForm = ({ type, img, symbol }: TokenFormProps) => {
       <div className="formWrapper flex flex-col gap-2">
         <div
           onClick={() => (converterStore.isOpen = { modal: type, open: true })}
-          className="active:translate-y-2 flex gap-2 cursor-pointer hover:opacity-70 transition duration-300 ease-in-out"
+          className="active:translate-y-2 flex gap-2 cursor-pointer hover:opacity-70 transition duration-300 ease-in-out w-fit"
         >
           <div className="w-6 h-6 bg-gray rounded-full ">
             <img

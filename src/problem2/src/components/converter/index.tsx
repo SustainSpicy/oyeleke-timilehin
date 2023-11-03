@@ -1,26 +1,18 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TokenForm from "./TokenForm";
 import { AiOutlineArrowDown, AiOutlineSwap } from "react-icons/ai";
 import { BsArrowRightShort } from "react-icons/bs";
 import { MdOutlineSwapVert } from "react-icons/md";
-import {
-  convertCurrency,
-  fetchCurrenciesList,
-  tokenConversion,
-} from "../../api";
+import { fetchCurrenciesList } from "../../api";
 import MyModal from "../modal";
-
-import { CurrencyImages, TokenData } from "../../constants/types";
 import { mapImageToToken, truncateString } from "../../constants/utils";
 import { converterStore } from "../../constants/store";
 import { useSnapshot } from "valtio";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Converter = () => {
   const snapshot = useSnapshot(converterStore);
   const [isHovering, setIsHovering] = useState(false);
-
-  const [currencyImages, setCurrencyImages] = useState<CurrencyImages>({});
-  // const [isOpen, setIsOpen] = useState({ modal: "", open: false });
   const [searchQuery, setSearchQuery] = useState("");
 
   // Accessing the states from the store
@@ -32,6 +24,7 @@ const Converter = () => {
     supportedCurrencies,
     isOpen,
     conversionResult,
+    currencyImages,
   } = snapshot;
 
   useEffect(() => {
@@ -41,9 +34,9 @@ const Converter = () => {
 
         converterStore.supportedCurrencies = await fetchCurrenciesList();
         if (tokensList.length > 1) {
-          converterStore.fromToken = tokensList[0]; // Set default fromToken
-          converterStore.toToken = tokensList[4]; // Set default toToken
-          setCurrencyImages(mapImageToToken(tokensList)); //map token images to symbol
+          converterStore.fromToken = { ...tokensList[0] }; // Set default fromToken
+          converterStore.toToken = { ...tokensList[4] }; // Set default toToken
+          converterStore.currencyImages = mapImageToToken(tokensList); //map token images to symbol
         }
       } catch (error: any) {
         console.error("Error fetching currencies:", error.message);
@@ -65,11 +58,16 @@ const Converter = () => {
   const filteredCurrencies = supportedCurrencies.filter((token) => {
     return searchQuery === ""
       ? supportedCurrencies
-      : token.currency.toString().includes(searchQuery.toLowerCase());
+      : token.currency.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   return (
-    <div className="card flex flex-col gap-6 ">
+    <motion.div
+      animate={{ x: 0, opacity: 1 }}
+      initial={{ x: 800, opacity: 0 }}
+      transition={{ duration: 1.1 }}
+      className="card flex flex-col gap-6 "
+    >
       <div className="card-header">
         <h1 className="text-md text-white font-bold text-3xl mb-4">Swap</h1>
         <span className="text-gray">Trade tokens in an instant</span>
@@ -128,49 +126,59 @@ const Converter = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        <div className="tokenList overflow-x-hidden min-h-[300px] max-h-[500px] overflow-y-scroll">
-          {filteredCurrencies.map((token, index) => {
-            const isCurrencySelected =
-              token.currency === fromToken?.currency ||
-              token.currency === toToken?.currency;
+        <motion.div className="tokenList overflow-x-hidden min-h-[300px] max-h-[500px] overflow-y-scroll flex flex-col ">
+          <AnimatePresence>
+            {filteredCurrencies.length ? (
+              filteredCurrencies.map((token, index) => {
+                const isCurrencySelected =
+                  token.currency === fromToken?.currency ||
+                  token.currency === toToken?.currency;
 
-            return (
-              <div
-                className={`tokeItem flex gap-2 p-4 hover:bg-black cursor-pointer select-none items-center ${
-                  isCurrencySelected ? "bg-black cursor-not-allowed" : ""
-                }`}
-                key={index}
-                onClick={() => {
-                  if (!isCurrencySelected) {
-                    isOpen.modal === "fromToken"
-                      ? (converterStore.fromToken = token)
-                      : (converterStore.toToken = token);
-                    converterStore.isOpen = { modal: "", open: false };
-                  }
-                }}
-              >
-                <div className="w-6 h-6 bg-gray rounded-full ">
-                  <img
-                    src={currencyImages[token.currency]}
-                    alt="token_logo"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div className="flex flex-col flex-1">
-                  <span className="text-white text-sm font-bold">
-                    {token.currency}
-                  </span>
-                  <span className="text-gray white text-xs font-normal">
-                    {token.currency.toLowerCase()}
-                  </span>
-                </div>
-                <BsArrowRightShort color="white" />
-              </div>
-            );
-          })}
-        </div>
+                return (
+                  <motion.div
+                    layout
+                    animate={{ opacity: 1 }}
+                    className={`active:translate-y-2 transition duration-300 ease-in-out tokeItem flex gap-2 p-4 hover:bg-black cursor-pointer select-none items-center ${
+                      isCurrencySelected ? "bg-black cursor-not-allowed" : ""
+                    }`}
+                    key={index}
+                    onClick={() => {
+                      if (!isCurrencySelected) {
+                        isOpen.modal === "fromToken"
+                          ? (converterStore.fromToken = token)
+                          : (converterStore.toToken = token);
+                        converterStore.isOpen = { modal: "", open: false };
+                      }
+                    }}
+                  >
+                    <div className="w-6 h-6 bg-gray rounded-full ">
+                      <img
+                        src={currencyImages[token.currency]}
+                        alt="token_logo"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col flex-1">
+                      <span className="text-white text-sm font-bold">
+                        {token.currency}
+                      </span>
+                      <span className="text-gray white text-xs font-normal">
+                        {token.currency.toLowerCase()}
+                      </span>
+                    </div>
+                    <BsArrowRightShort color="white" />
+                  </motion.div>
+                );
+              })
+            ) : (
+              <motion.span className="p-6 text-gray">
+                No Match Found...
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </MyModal>
-    </div>
+    </motion.div>
   );
 };
 
