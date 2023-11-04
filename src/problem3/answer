@@ -1,0 +1,39 @@
+===============================================
+Redundant Sorting and Filtering:
+
+The sortedBalances array is created using useMemo,
+which sorts and filters the balances array based on the blockchain property.
+However, the filtering logic is redundant, as it checks for lhsPriority which is not defined in the code block. It seems like there's a typographical error; it should be balancePriority.
+The filtering logic also returns true for balance.amount <= 0,
+but this condition is not used in the subsequent code. If this condition is not necessary,
+it leads to unnecessary computations.
+
+===============================================
+Inefficient Mapping:
+
+The sortedBalances array is mapped twice: first to create formattedBalances and then to create rows. This results in iterating over the same array twice, which can be avoided.
+
+===============================================
+Inefficient Usage of Objects:
+
+The useMemo hook recalculates sortedBalances whenever balances or prices change. If balances or prices are large objects, recalculating this array on every change can be computationally expensive.
+
+===============================================
+Inefficient Key Usage:
+
+The key prop in the WalletRow component is set to the index of the map function. Using the index as a key can lead to issues with component reordering and is not recommended for dynamic lists.
+
+===============================================
+Inefficient String Formatting:
+
+String formatting using toFixed() might not be efficient for large numbers. It can lead to precision issues, especially with financial calculations. Consider using a more robust library for handling currency formatting.
+
+===============================================
+Unused getPriority Function:
+
+The getPriority function is defined but not used in the code. This can be removed to improve code readability.
+
+===============================================
+Lack of Error Handling:
+
+There is no error handling for potential issues, such as missing properties in the balances or prices objects. Proper error handling should be implemented to handle unexpected data structures.
