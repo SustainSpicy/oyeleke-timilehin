@@ -9,7 +9,8 @@ export const converterStore: Store = proxy({
   toAmount: "",
   supportedCurrencies: [],
   currencyImages: {},
-  isOpen: { modal: "", open: false },
+  isOpen: false,
   searchQuery: "",
   conversionResult: "",
+  selectedToken: "",
 });

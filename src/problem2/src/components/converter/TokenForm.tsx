@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { BiCaretDown } from "react-icons/bi";
 import ConvertionInput from "../form";
 import { TokenData } from "../../constants/types";
@@ -11,9 +11,10 @@ interface TokenFormProps {
   type: string;
   img: string;
   symbol: TokenData | null;
+  setModal: Dispatch<SetStateAction<boolean>>;
 }
 
-const TokenForm = ({ type, img, symbol }: TokenFormProps) => {
+const TokenForm = ({ type, img, symbol, setModal }: TokenFormProps) => {
   const [openAlertBar] = useAlertContext();
   const snapshot = useSnapshot(converterStore);
   const {
@@ -87,7 +88,10 @@ const TokenForm = ({ type, img, symbol }: TokenFormProps) => {
     <>
       <div className="formWrapper flex flex-col gap-2">
         <div
-          onClick={() => (converterStore.isOpen = { modal: type, open: true })}
+          onClick={() => {
+            setModal(true);
+            converterStore.selectedToken = type;
+          }}
           className="active:translate-y-2 flex gap-2 cursor-pointer hover:opacity-70 transition duration-300 ease-in-out w-fit"
         >
           <div className="w-6 h-6 bg-gray rounded-full ">

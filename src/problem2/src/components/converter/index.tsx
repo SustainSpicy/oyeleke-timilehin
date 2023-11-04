@@ -1,14 +1,8 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import TokenForm from "./TokenForm";
-import {
-  AiFillCloseCircle,
-  AiOutlineArrowDown,
-  AiOutlineSwap,
-} from "react-icons/ai";
-import { BsArrowRightShort } from "react-icons/bs";
-import { MdOutlineSwapVert } from "react-icons/md";
+import { AiOutlineSwap } from "react-icons/ai";
+
 import { fetchCurrenciesList } from "../../api";
-import MyModal from "./modal";
 import { mapImageToToken, truncateString } from "../../constants/utils";
 import { converterStore } from "../../constants/store";
 import { useSnapshot } from "valtio";
@@ -18,22 +12,24 @@ import CustomModal from "../customModal";
 import Honeycomb_loader from "../loaders/honeycomb_loader";
 import { Dialog } from "@headlessui/react";
 import { BsCurrencyExchange } from "react-icons/bs";
+import TokenItem from "./TokenItem";
+import { TokenData } from "../../constants/types";
+import SwapButton from "./SwapButton";
 
 const Converter = () => {
   const [openAlertBar] = useAlertContext();
   const snapshot = useSnapshot(converterStore);
-  const [isHovering, setIsHovering] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [shouldOpenTokenSelect, setShouldOpenTokenSelect] =
+    useState<boolean>(false);
   const [customModalIsOpen, setCustomModalIsOpen] = useState<boolean>(false);
   // Accessing the states from the store
   const {
     fromToken,
     toToken,
-    fromAmount,
-    toAmount,
-    supportedCurrencies,
     isOpen,
+    supportedCurrencies,
     conversionResult,
     currencyImages,
   } = snapshot;
@@ -43,7 +39,7 @@ const Converter = () => {
       try {
         const tokensList = await fetchCurrenciesList();
 
-        converterStore.supportedCurrencies = await fetchCurrenciesList();
+        converterStore.supportedCurrencies = tokensList;
         if (tokensList.length > 1) {
           converterStore.fromToken = { ...tokensList[0] }; // Set default fromToken
           converterStore.toToken = { ...tokensList[4] }; // Set default toToken
@@ -63,21 +59,13 @@ const Converter = () => {
     fetchCurrencies();
   }, []);
 
-  function swapSelectedTokens() {
-    const temp = fromAmount;
-    converterStore.fromAmount = toAmount;
-    converterStore.toAmount = temp;
-
-    const temp2 = fromToken;
-    converterStore.fromToken = toToken;
-    converterStore.toToken = temp2;
-  }
-
-  const filteredCurrencies = supportedCurrencies.filter((token) => {
-    return searchQuery === ""
-      ? supportedCurrencies
-      : token.currency.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  const filteredCurrencies: TokenData[] = useMemo(() => {
+    return supportedCurrencies.filter(
+      (token) =>
+        searchQuery === "" ||
+        token.currency.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [searchQuery, supportedCurrencies]);
 
   function swapTokens() {
     setIsLoading(true);
@@ -87,6 +75,11 @@ const Converter = () => {
       setIsLoading(false);
     }, 2000);
   }
+
+  const handleSearchInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   return (
     <motion.div
       animate={{ x: 0, opacity: 1 }}
@@ -94,35 +87,31 @@ const Converter = () => {
       transition={{ duration: 0.8, delay: 0.2 }}
       className="card flex flex-col gap-6 "
     >
+      {/* header  */}
       <div className="card-header">
         <h1 className="text-md text-white font-bold text-3xl mb-4">Swap</h1>
         <span className="text-gray">Trade tokens in an instant</span>
       </div>
+
+      {/* convertion input */}
       <div className="card-body border-t-1 border-blue-50  flex flex-col gap-4">
         <TokenForm
           type="fromToken"
           symbol={fromToken}
           img={fromToken ? currencyImages[fromToken.currency] : ""}
+          setModal={setShouldOpenTokenSelect}
         />
-        <button
-          className="rounded-full bg-blue w-10 h-10 hover:bg-sky-900 flex justify-center items-center self-center"
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
-          onClick={() => swapSelectedTokens()}
-        >
-          {isHovering ? (
-            <MdOutlineSwapVert color="white" fontSize={25} />
-          ) : (
-            <AiOutlineArrowDown color="#0284c7" fontSize={25} />
-          )}
-        </button>
+        <SwapButton />
 
         <TokenForm
           type="toToken"
           symbol={toToken}
           img={toToken ? currencyImages[toToken.currency] : ""}
+          setModal={setShouldOpenTokenSelect}
         />
       </div>
+
+      {/* price detail */}
       <div className="card-footer text-gray flex flex-col gap-4">
         <div className="flex justify-between">
           <span>Price</span>
@@ -139,66 +128,40 @@ const Converter = () => {
           <span>0.5%</span>
         </div>
       </div>
+
+      {/* swap button  */}
       <button
         onClick={() => swapTokens()}
         className="active:translate-y-3 rounded-3xl bg-green-700 p-4 text-white hover:bg-green-900"
       >
         Swap
       </button>
-      <MyModal>
+
+      {/* token selection Modal  */}
+      <CustomModal
+        shouldOpen={shouldOpenTokenSelect}
+        setShouldOpen={setShouldOpenTokenSelect}
+      >
         <div className="px-4">
           <input
             type="text"
             placeholder="Search for Token"
             className="w-full rounded-2xl border-none outline-none focus:outline-[#0284c7]  p-2 text-md bg-sky-950 text-gray"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchInputChange}
           />
         </div>
         <motion.div className="tokenList overflow-x-hidden min-h-[300px] max-h-[500px] overflow-y-scroll flex flex-col ">
           <AnimatePresence>
             {filteredCurrencies.length ? (
-              filteredCurrencies.map((token, index) => {
-                const isCurrencySelected =
-                  token.currency === fromToken?.currency ||
-                  token.currency === toToken?.currency;
-
-                return (
-                  <motion.div
-                    layout
-                    animate={{ opacity: 1 }}
-                    className={`active:translate-y-2 transition duration-300 ease-in-out tokeItem flex gap-2 p-4 hover:bg-black cursor-pointer select-none items-center ${
-                      isCurrencySelected ? "bg-black cursor-not-allowed" : ""
-                    }`}
-                    key={index}
-                    onClick={() => {
-                      if (!isCurrencySelected) {
-                        isOpen.modal === "fromToken"
-                          ? (converterStore.fromToken = token)
-                          : (converterStore.toToken = token);
-                        converterStore.isOpen = { modal: "", open: false };
-                      }
-                    }}
-                  >
-                    <div className="w-6 h-6 bg-gray rounded-full ">
-                      <img
-                        src={currencyImages[token.currency]}
-                        alt="token_logo"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col flex-1">
-                      <span className="text-white text-sm font-bold">
-                        {token.currency}
-                      </span>
-                      <span className="text-gray white text-xs font-normal">
-                        {token.currency.toLowerCase()}
-                      </span>
-                    </div>
-                    <BsArrowRightShort color="white" />
-                  </motion.div>
-                );
-              })
+              filteredCurrencies.map((token, index) => (
+                <div key={index}>
+                  <TokenItem
+                    token={token}
+                    setModal={setShouldOpenTokenSelect}
+                  />
+                </div>
+              ))
             ) : (
               <motion.span className="p-6 text-gray">
                 No Match Found...
@@ -206,29 +169,22 @@ const Converter = () => {
             )}
           </AnimatePresence>
         </motion.div>
-      </MyModal>
-      <CustomModal isOpen={customModalIsOpen} setIsOpen={setCustomModalIsOpen}>
-        {isLoading ? (
-          <Honeycomb_loader />
-        ) : (
-          <Dialog.Panel className="z-50 w-full flex flex-col gap-6 max-w-md max-h-md transform overflow-hidden rounded-2xl bg-blue p-0 text-left align-middle shadow-xl transition-all">
-            <Dialog.Title
-              as="h3"
-              className="flex justify-between text-xl font-bold leading-6 text-white p-4"
-            >
-              <span></span>
-              <AiFillCloseCircle
-                className="cursor-pointer focus:animate-bounce"
-                onClick={() => setCustomModalIsOpen(false)}
-              />
-            </Dialog.Title>
-            <div className="main p-6 flex flex-col items-center gap-4">
-              <h1 className="font-bold font-xl text-white">Swap Completed</h1>
+      </CustomModal>
 
-              <BsCurrencyExchange fontSize={"50px"} color="white" />
-            </div>
-          </Dialog.Panel>
-        )}
+      {/* token success dialog  */}
+      <CustomModal
+        isLoading={isLoading}
+        shouldOpen={customModalIsOpen}
+        setShouldOpen={setCustomModalIsOpen}
+        loaderComponent={Honeycomb_loader}
+      >
+        <Dialog.Panel className="z-50 w-full flex flex-col gap-6 max-w-md max-h-md transform overflow-hidden rounded-2xl bg-blue p-0 text-left align-middle shadow-xl transition-all">
+          <div className="main p-6 flex flex-col items-center gap-4">
+            <h1 className="font-bold font-xl text-white">Swap Completed</h1>
+
+            <BsCurrencyExchange fontSize={"50px"} color="white" />
+          </div>
+        </Dialog.Panel>
       </CustomModal>
     </motion.div>
   );

@@ -1,22 +1,39 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Dispatch, Fragment, ReactNode, SetStateAction } from "react";
+import {
+  Dispatch,
+  Fragment,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+} from "react";
+import { AiFillCloseCircle } from "react-icons/ai";
 
+type LoaderComponent = () => JSX.Element;
 interface CustomModalProps {
+  title?: string;
   children: ReactNode;
-  setIsOpen: Dispatch<SetStateAction<boolean>>;
-  isOpen: boolean;
+  setShouldOpen: Dispatch<SetStateAction<boolean>>;
+  shouldOpen: boolean;
+  isLoading?: boolean;
+  loaderComponent?: LoaderComponent | undefined;
 }
+
 export default function CustomModal({
+  title,
   children,
-  isOpen,
-  setIsOpen,
+  shouldOpen,
+  setShouldOpen,
+  isLoading,
+  loaderComponent: LoaderComponent,
 }: CustomModalProps) {
   function closeModal() {
-    setIsOpen(false);
+    setShouldOpen(false);
   }
-
+  useEffect(() => {
+    console.log(shouldOpen);
+  }, []);
   return (
-    <Transition appear show={isOpen} as={Fragment}>
+    <Transition appear show={shouldOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={() => closeModal()}>
         <Transition.Child
           as={Fragment}
@@ -41,7 +58,23 @@ export default function CustomModal({
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <div> {children}</div>
+              {isLoading && LoaderComponent ? (
+                LoaderComponent
+              ) : (
+                <Dialog.Panel className="z-50 w-full flex flex-col gap-6 max-w-md max-h-md transform overflow-hidden rounded-2xl bg-blue p-0 text-left align-middle shadow-xl transition-all">
+                  <Dialog.Title
+                    as="h3"
+                    className="flex justify-between text-xl font-bold leading-6 text-white p-4"
+                  >
+                    <span>{title}</span>
+                    <AiFillCloseCircle
+                      className="cursor-pointer focus:animate-bounce"
+                      onClick={() => closeModal()}
+                    />
+                  </Dialog.Title>
+                  <div> {children}</div>
+                </Dialog.Panel>
+              )}
             </Transition.Child>
           </div>
         </div>

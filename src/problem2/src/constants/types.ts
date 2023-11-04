@@ -14,10 +14,11 @@ export type Store = {
   fromAmount: string;
   toAmount: string;
   supportedCurrencies: TokenData[];
-  isOpen: { modal: string; open: boolean };
+  isOpen: boolean;
   searchQuery: string;
   conversionResult: string;
   currencyImages: CurrencyImages;
+  selectedToken: string;
 };
 
 export interface PriceData {
