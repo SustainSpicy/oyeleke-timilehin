@@ -1,0 +1,64 @@
+.skeleton {
+  /* border-radius: 6px; */
+  animation: skeleton-loading 1s linear infinite alternate;
+  opacity: 0.4;
+}
+@keyframes skeleton-loading {
+  0% {
+    background-color: hsl(200, 20%, 70%);
+  }
+  100% {
+    background-color: hsl(200, 20%, 95%);
+  }
+}
+/* .text {
+  width: 100%;
+  height: 12px;
+}
+
+.title1 {
+  width: 20%;
+  height: 20px;
+  margin-bottom: 15px;
+}
+.title2 {
+  width: 20%;
+  height: 10px;
+  margin-bottom: 15px;
+}
+.title {
+  width: 50%;
+  height: 20px;
+  margin-bottom: 15px;
+}
+
+.avatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.thumbnail {
+  width: 100px;
+  height: 50px;
+}
+.button {
+  width: 100px;
+  height: 30px;
+}
+.card {
+  width: 150px;
+  height: 200px;
+}
+.input {
+  width: 150px;
+  height: 30px;
+}
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+} */

@@ -58,3 +58,13 @@ export function getChartData(fromToken: TokenData, toToken: TokenData) {
 
   return chartData;
 }
+
+export function checkLocalImage(src: string) {
+  var img = new Image();
+  img.onload = function () {
+    return true;
+  };
+  // img.onerror = function () {
+  //   onError();
+  // };
+}

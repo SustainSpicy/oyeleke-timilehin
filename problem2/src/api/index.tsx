@@ -21,7 +21,7 @@ export async function convertCurrency(
   }
 }
 
-const API_URL = "https://interview.switcheo.com/prices.json";
+const API_URL = "https://interview.witcheo.com/prices.json";
 
 // Function to fetch allTokens
 export async function fetchCurrenciesList() {

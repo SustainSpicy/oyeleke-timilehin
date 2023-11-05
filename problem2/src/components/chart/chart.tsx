@@ -1,8 +1,11 @@
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 import { PriceData } from "../../constants/types";
+import Chart_Skeleton from "./chart_skeleton";
 
 const Chart = ({ data }: { data: PriceData[] }) => {
+  console.log(data);
+
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart width={500} height={400} data={data} margin={{}}>
