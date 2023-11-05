@@ -37,9 +37,7 @@ const TokenForm = ({ type, img, symbol, setModal }: TokenFormProps) => {
             conversionResult,
             fromToken,
             toToken,
-            mutableSupportedCurrencies,
-            converterStore,
-            type
+            mutableSupportedCurrencies
           );
           if (result) {
             converterStore.conversionResult = result.toString();
@@ -69,9 +67,7 @@ const TokenForm = ({ type, img, symbol, setModal }: TokenFormProps) => {
         amount,
         fromToken,
         toToken,
-        mutableSupportedCurrencies,
-        converterStore,
-        type
+        mutableSupportedCurrencies
       );
       if (result) {
         if (type === "fromToken") {

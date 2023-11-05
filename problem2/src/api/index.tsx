@@ -21,7 +21,7 @@ export async function convertCurrency(
   }
 }
 
-const API_URL = "https://interview.witcheo.com/prices.json";
+const API_URL = "https://interview.switcheo.com/prices.json";
 
 // Function to fetch allTokens
 export async function fetchCurrenciesList() {
@@ -38,7 +38,7 @@ export async function fetchCurrenciesList() {
       throw new Error("Failed to fetch currencies list");
     }
   } catch (error: any) {
-    console.error("Error fetching currencies list:", error.message);
+    // console.error("Error fetching currencies list:", error.message);
     throw error;
   }
 }
@@ -47,9 +47,7 @@ export async function tokenConversion(
   amount: string,
   fromToken: TokenData,
   toToken: TokenData,
-  supportedCurrencies: TokenData[],
-  store: Store,
-  type: string
+  supportedCurrencies: TokenData[]
 ) {
   const result = await convertCurrency(
     fromToken,
@@ -57,14 +55,6 @@ export async function tokenConversion(
     parseFloat(amount),
     supportedCurrencies
   );
-  // if (result) {
-  //   if (type === "fromToken") {
-  //     store.toAmount = result.toString();
-  //   }
-  //   if (type === "toToken") {
-  //     store.fromAmount = result.toString();
-  //   }
-  //   store.conversionResult = result;
-  // }
+
   return result;
 }
