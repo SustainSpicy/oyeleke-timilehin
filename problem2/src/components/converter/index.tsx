@@ -146,7 +146,7 @@ const Converter = () => {
           <input
             type="text"
             placeholder="Search for Token"
-            className="w-full rounded-2xl border-none outline-none focus:outline-[#0284c7]  p-2 text-md bg-sky-950 text-gray"
+            className="w-full mb-4 rounded-2xl border-none outline-none focus:outline-[#0284c7]  p-2 text-md bg-sky-950 text-gray"
             value={searchQuery}
             onChange={handleSearchInputChange}
           />
@@ -155,12 +155,21 @@ const Converter = () => {
           <AnimatePresence>
             {filteredCurrencies.length ? (
               filteredCurrencies.map((token, index) => (
-                <div key={index}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }} // Initial animation values
+                  animate={{ opacity: 1, y: 0 }} // Animation values to animate to
+                  exit={{ opacity: 0, y: 20 }} // Exit animation values
+                  transition={{
+                    // duration: 0.2,
+                    delay: index * 0.02,
+                  }}
+                  key={index}
+                >
                   <TokenItem
                     token={token}
                     setModal={setShouldOpenTokenSelect}
                   />
-                </div>
+                </motion.div>
               ))
             ) : (
               <motion.span className="p-6 text-gray">

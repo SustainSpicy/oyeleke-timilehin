@@ -29,9 +29,7 @@ export default function CustomModal({
   function closeModal() {
     setShouldOpen(false);
   }
-  useEffect(() => {
-    console.log(shouldOpen);
-  }, []);
+
   return (
     <Transition appear show={shouldOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={() => closeModal()}>

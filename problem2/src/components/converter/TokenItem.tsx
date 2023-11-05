@@ -20,8 +20,6 @@ const TokenItem = ({ token, setModal }: TokenItemProps) => {
 
   return (
     <motion.div
-      layout
-      animate={{ opacity: 1 }}
       className={`active:translate-y-2 transition duration-300 ease-in-out tokeItem flex gap-2 p-4 hover:bg-black cursor-pointer select-none items-center ${
         isCurrencySelected ? "bg-black cursor-not-allowed" : ""
       }`}
