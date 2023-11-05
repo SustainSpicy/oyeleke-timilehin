@@ -4,7 +4,7 @@ import { PriceData } from "../../constants/types";
 import { useSnapshot } from "valtio";
 import { converterStore } from "../../constants/store";
 import { getChartData } from "../../constants/utils";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 
 const timeFrameData = ["24H", "1W", "1M", "1Y"];
 const PriceChart = () => {
@@ -21,8 +21,8 @@ const PriceChart = () => {
 
   return (
     <motion.div
-      animate={{ x: 0, opacity: 1 }}
-      initial={{ x: -800, opacity: 0 }}
+      initial={{ x: -800, opacity: 0, rotate: 90 }}
+      animate={{ x: 0, opacity: 1, rotate: 0 }}
       transition={{ duration: 0.8 }}
       className="graph flex-1 flex flex-col gap-4 text-white "
     >

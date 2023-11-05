@@ -28,7 +28,6 @@ const Converter = () => {
   const {
     fromToken,
     toToken,
-    isOpen,
     supportedCurrencies,
     conversionResult,
     currencyImages,
@@ -82,8 +81,8 @@ const Converter = () => {
 
   return (
     <motion.div
-      animate={{ x: 0, opacity: 1 }}
       initial={{ x: 800, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.8, delay: 0.2 }}
       className="card flex flex-col gap-6 "
     >

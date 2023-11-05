@@ -1,11 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import {
-  Dispatch,
-  Fragment,
-  ReactNode,
-  SetStateAction,
-  useEffect,
-} from "react";
+import { Dispatch, Fragment, ReactNode, SetStateAction } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 
 type LoaderComponent = () => JSX.Element;
