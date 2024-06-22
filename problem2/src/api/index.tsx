@@ -1,4 +1,4 @@
-import { Store, TokenData } from "../constants/types";
+import { TokenData } from "../constants/types"
 
 export async function convertCurrency(
   fromToken: TokenData,
@@ -9,37 +9,37 @@ export async function convertCurrency(
   if (fromToken && toToken && amount) {
     const token1Value = supportedCurrencies.find(
       (token) => token.currency === fromToken.currency
-    )?.price;
+    )?.price
     const token2Value = supportedCurrencies.find(
       (token) => token.currency === toToken.currency
-    )?.price;
+    )?.price
     if (token1Value && token2Value) {
-      const convertedPrice = (amount * token2Value) / token1Value;
+      const convertedPrice = (amount * token2Value) / token1Value
 
-      return parseFloat(convertedPrice.toFixed(5));
+      return parseFloat(convertedPrice.toFixed(5))
     }
   }
 }
 
-const API_URL = "https://interview.switcheo.com/prices.json";
+const API_URL = "https://interview.switcheo.com/prices.json"
 
 // Function to fetch allTokens
 export async function fetchCurrenciesList() {
   try {
-    const response = await fetch(API_URL);
-    const data = await response.json();
+    const response = await fetch(API_URL)
+    const data = await response.json()
     const currenciesData: TokenData[] = data.map((token: TokenData) => ({
       currency: token.currency,
-      price: token.price,
-    }));
+      price: token.price
+    }))
     if (response.ok) {
-      return currenciesData;
+      return currenciesData
     } else {
-      throw new Error("Failed to fetch currencies list");
+      throw new Error("Failed to fetch currencies list")
     }
   } catch (error: any) {
     // console.error("Error fetching currencies list:", error.message);
-    throw error;
+    throw error
   }
 }
 
@@ -54,7 +54,7 @@ export async function tokenConversion(
     toToken,
     parseFloat(amount),
     supportedCurrencies
-  );
+  )
 
-  return result;
+  return result
 }

@@ -3,9 +3,7 @@ import { defaultWagmiConfig } from "@web3modal/wagmi/react/config"
 
 import { WagmiProvider } from "wagmi"
 import { arbitrum, mainnet } from "wagmi/chains"
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 
-const queryClient = new QueryClient()
 const projectId = "dbcf3f81a2d7187a79983b892f361d7e"
 
 const chains = [mainnet, arbitrum] as const
