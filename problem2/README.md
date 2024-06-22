@@ -1,64 +1,46 @@
-# Bito TOken Converter by OYELEKE ISREAL TIMILEHIN
+# Getting Started with Create React App
 
-![Banner](public/banner.png)
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-- [Description](#Description)
-- [Key Features](#key-features)
-- [Technologies used](#technologies-used)
-- [Configuration and Setup](#configuration-and-setup)
-- [Usage](#Usage)
+## Available Scripts
 
-## Description
+In the project directory, you can run:
 
-The Currency Swap Form is a web application that allows users to swap assets from one currency to another. This form provides an intuitive and visually attractive interface for users to perform currency swaps seamlessly. Users can input the desired currencies, the amount to be swapped, and receive real-time exchange rate information.
+### `npm start`
 
-## Key Features
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-- Currency Selection: Users can select the currencies they want to swap.
-- Amount Input: Users can input the amount they want to swap.
-- Real-time Exchange Rate: Display real-time exchange rate information based on user input.
-- Token Images: Visual representation of selected tokens using token images from the Switcheo repository.
-- Input Validation: Interactive form validation and error messages for user-friendly experience.
-- Responsive Design: Ensures the form is accessible and functional across various devices and screen sizes.
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-## Technologies used
+### `npm test`
 
-The Customizer is built using the following technologies:
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-- React
-- Typescript
-- Framer Motion
-- Valtio
-- Tailwindcss
-- recharts
+### `npm run build`
 
-## Configuration and Setup
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-In order to run this project locally, simply fork and clone the repository or download as zip and unzip on your machine.
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-- Open the project in your prefered code editor.
-- Go to terminal -> New terminal (If you are using VS code)
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-```
-$ cd client
-$ npm install or yarn install (to install client-side dependencies)
-$ npm start (to start the client)
-```
+### `npm run eject`
 
-## Usage
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-To use the Customizer, follow these steps:
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-1. Navigate to `http://localhost:3000` in your web browser.
-2. Select the currencies you want to swap from and to.
-3. Input the amount you wish to swap.
-4. View the real-time exchange rate and token images for the selected currencies.
-5. Submit the form to complete the currency swap transaction.
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-## Contributing
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-Contributions to the Customizer are welcome. If you find a bug or have a feature request, please open an issue or submit a pull request.
+## Learn More
 
-## License
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-The Customizer is licensed under the MIT License.
+To learn React, check out the [React documentation](https://reactjs.org/).
